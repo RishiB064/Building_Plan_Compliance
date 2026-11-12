@@ -1,0 +1,792 @@
+{
+ "prompt_version": "v1",
+ "results": [
+  {
+   "name": "baseline: one search only",
+   "overrides": {
+    "MAX_TOOL_CALLS": 1
+   },
+   "summary": {
+    "scenarios": 7,
+    "passed": 0,
+    "route_accuracy": 0.0,
+    "violation_recall": 0.0,
+    "violation_precision": null,
+    "context_recall": 0.106,
+    "groundedness": null,
+    "escalation_rate": 1.0,
+    "guardrail_catch": null,
+    "guardrail_false_positive": null,
+    "invalid_rejected": null,
+    "avg_tool_calls": 1.0,
+    "avg_seconds": 13.5363,
+    "avg_tokens": 2768.0,
+    "avg_cost_usd": 0.0036
+   },
+   "rows": [
+    {
+     "id": "s01",
+     "kind": "normal",
+     "note": "Small plot, narrow road: gaps too small and too tall for a small plot (the main case)",
+     "expected_route": "revise-and-recheck",
+     "route": "specialist-review",
+     "route_ok": false,
+     "expected_violations": [
+      "ZR.T8.r3",
+      "ZR.T9.N1"
+     ],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 2,
+     "context_recall": 0.0,
+     "groundedness": null,
+     "verified": false,
+     "tool_calls": 1,
+     "attempts": 1,
+     "seconds": 0.479,
+     "cost_usd": 0.0013872,
+     "tokens": 1498,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 0.48,
+     "findings": [],
+     "retrieved": [],
+     "missing": [
+      "BL.5.2.7.1",
+      "ZR.3.1.iii",
+      "ZR.4.1.2.b",
+      "ZR.T8.r3",
+      "ZR.T9.N1"
+     ],
+     "queries": [
+      "None"
+     ],
+     "problems": [
+      "best retrieval score 0.00 below relevance threshold 0.25: proposal appears outside the corpus",
+      "no findings produced",
+      "coverage: setbacks not retrieved",
+      "coverage: height_by_road_width not retrieved",
+      "coverage: small_plot_height not retrieved"
+     ],
+     "reason": "the proposal falls outside the indexed corpus; no grounded finding can be made",
+     "ok": false
+    },
+    {
+     "id": "s02",
+     "kind": "normal",
+     "note": "Same plot, within every limit",
+     "expected_route": "clear-for-submission",
+     "route": "specialist-review",
+     "route_ok": false,
+     "expected_violations": [],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "context_recall": 0.0,
+     "groundedness": null,
+     "verified": false,
+     "tool_calls": 1,
+     "attempts": 1,
+     "seconds": 0.532,
+     "cost_usd": 0.0014016,
+     "tokens": 1500,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 0.53,
+     "findings": [],
+     "retrieved": [],
+     "missing": [
+      "BL.5.2.7.1",
+      "ZR.3.1.ii",
+      "ZR.4.1.2.b",
+      "ZR.T8.r3",
+      "ZR.T9.N1"
+     ],
+     "queries": [
+      "None"
+     ],
+     "problems": [
+      "best retrieval score 0.00 below relevance threshold 0.25: proposal appears outside the corpus",
+      "no findings produced",
+      "coverage: setbacks not retrieved",
+      "coverage: height_by_road_width not retrieved",
+      "coverage: small_plot_height not retrieved"
+     ],
+     "reason": "the proposal falls outside the indexed corpus; no grounded finding can be made",
+     "ok": false
+    },
+    {
+     "id": "s05",
+     "kind": "normal",
+     "note": "Plot above 250 sq m: front gap smaller than 12% of the depth",
+     "expected_route": "revise-and-recheck",
+     "route": "specialist-review",
+     "route_ok": false,
+     "expected_violations": [
+      "ZR.T8.r4"
+     ],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 1,
+     "context_recall": 0.0,
+     "groundedness": null,
+     "verified": false,
+     "tool_calls": 1,
+     "attempts": 1,
+     "seconds": 0.455,
+     "cost_usd": 0.0013856,
+     "tokens": 1496,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 0.45,
+     "findings": [],
+     "retrieved": [],
+     "missing": [
+      "BL.5.2.7.1",
+      "ZR.3.1.ii",
+      "ZR.4.1.2.b",
+      "ZR.T8.r4"
+     ],
+     "queries": [
+      "None"
+     ],
+     "problems": [
+      "best retrieval score 0.00 below relevance threshold 0.25: proposal appears outside the corpus",
+      "no findings produced",
+      "coverage: setbacks not retrieved",
+      "coverage: height_by_road_width not retrieved"
+     ],
+     "reason": "the proposal falls outside the indexed corpus; no grounded finding can be made",
+     "ok": false
+    },
+    {
+     "id": "s09",
+     "kind": "normal",
+     "note": "Plot up to 60 sq m, front gap too small",
+     "expected_route": "revise-and-recheck",
+     "route": "specialist-review",
+     "route_ok": false,
+     "expected_violations": [
+      "ZR.T8.r1"
+     ],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 1,
+     "context_recall": 0.2,
+     "groundedness": null,
+     "verified": false,
+     "tool_calls": 1,
+     "attempts": 2,
+     "seconds": 2.27,
+     "cost_usd": 0.0046704,
+     "tokens": 3554,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 2.27,
+     "findings": [],
+     "retrieved": [
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r5"
+     ],
+     "missing": [
+      "BL.5.2.7.1",
+      "ZR.3.1.ii",
+      "ZR.4.1.2.b",
+      "ZR.T9.N1"
+     ],
+     "queries": [
+      "residential zone setbacks plot area"
+     ],
+     "problems": [
+      "coverage: height_by_road_width not retrieved",
+      "coverage: small_plot_height not retrieved"
+     ],
+     "reason": "self-verification failed after retries: coverage: height_by_road_width not retrieved; coverage: small_plot_height not retrieved",
+     "ok": false
+    },
+    {
+     "id": "s15",
+     "kind": "normal",
+     "note": "Open parking floor too high (4.0 m)",
+     "expected_route": "revise-and-recheck",
+     "route": "specialist-review",
+     "route_ok": false,
+     "expected_violations": [
+      "BL.2.149"
+     ],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 1,
+     "context_recall": 0.1667,
+     "groundedness": null,
+     "verified": false,
+     "tool_calls": 1,
+     "attempts": 2,
+     "seconds": 26.385,
+     "cost_usd": 0.004852,
+     "tokens": 3609,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 26.39,
+     "findings": [],
+     "retrieved": [
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r5"
+     ],
+     "missing": [
+      "BL.2.149",
+      "BL.5.2.7.1",
+      "ZR.3.1.ii",
+      "ZR.4.1.2.b",
+      "ZR.T9.N1"
+     ],
+     "queries": [
+      "residential zone setbacks plot area"
+     ],
+     "problems": [
+      "coverage: height_by_road_width not retrieved",
+      "coverage: small_plot_height not retrieved"
+     ],
+     "reason": "self-verification failed after retries: coverage: height_by_road_width not retrieved; coverage: small_plot_height not retrieved",
+     "ok": false
+    },
+    {
+     "id": "s19",
+     "kind": "normal",
+     "note": "Plot above 4000 sq m, front gap only 4 m",
+     "expected_route": "revise-and-recheck",
+     "route": "specialist-review",
+     "route_ok": false,
+     "expected_violations": [
+      "ZR.T8.r5"
+     ],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 1,
+     "context_recall": 0.25,
+     "groundedness": null,
+     "verified": false,
+     "tool_calls": 1,
+     "attempts": 2,
+     "seconds": 28.078,
+     "cost_usd": 0.0045752,
+     "tokens": 3547,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 28.08,
+     "findings": [],
+     "retrieved": [
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r5"
+     ],
+     "missing": [
+      "BL.5.2.7.1",
+      "ZR.3.1.ii",
+      "ZR.4.1.2.b"
+     ],
+     "queries": [
+      "residential zone setbacks plot area"
+     ],
+     "problems": [
+      "coverage: height_by_road_width not retrieved"
+     ],
+     "reason": "self-verification failed after retries: coverage: height_by_road_width not retrieved",
+     "ok": false
+    },
+    {
+     "id": "s22",
+     "kind": "normal",
+     "note": "Small plot, 15 m tall counted with a 2.7 m parking floor: allowed up to 15 m with Table 8",
+     "expected_route": "revise-and-recheck",
+     "route": "specialist-review",
+     "route_ok": false,
+     "expected_violations": [
+      "ZR.T9.N1"
+     ],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 1,
+     "context_recall": 0.125,
+     "groundedness": null,
+     "verified": false,
+     "tool_calls": 1,
+     "attempts": 2,
+     "seconds": 36.555,
+     "cost_usd": 0.007104,
+     "tokens": 4172,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 36.56,
+     "findings": [],
+     "retrieved": [
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r5"
+     ],
+     "missing": [
+      "BL.12.9",
+      "BL.2.149",
+      "BL.5.2.7.1",
+      "ZR.3.1.iii",
+      "ZR.4.1.2.b",
+      "ZR.T9.N1",
+      "ZR.T9.N6"
+     ],
+     "queries": [
+      "residential zone setbacks plot area"
+     ],
+     "problems": [
+      "coverage: height_by_road_width not retrieved",
+      "coverage: small_plot_height not retrieved"
+     ],
+     "reason": "self-verification failed after retries: coverage: height_by_road_width not retrieved; coverage: small_plot_height not retrieved",
+     "ok": false
+    }
+   ]
+  },
+  {
+   "name": "agent loop (default settings)",
+   "overrides": {},
+   "summary": {
+    "scenarios": 7,
+    "passed": 0,
+    "route_accuracy": 0.0,
+    "violation_recall": 0.0,
+    "violation_precision": null,
+    "context_recall": 0.4131,
+    "groundedness": 1.0,
+    "escalation_rate": 0.8571,
+    "guardrail_catch": null,
+    "guardrail_false_positive": null,
+    "invalid_rejected": null,
+    "avg_tool_calls": 8.0,
+    "avg_seconds": 120.3117,
+    "avg_tokens": 12896.4286,
+    "avg_cost_usd": 0.0151
+   },
+   "rows": [
+    {
+     "id": "s01",
+     "kind": "normal",
+     "note": "Small plot, narrow road: gaps too small and too tall for a small plot (the main case)",
+     "expected_route": "revise-and-recheck",
+     "route": "specialist-review",
+     "route_ok": false,
+     "expected_violations": [
+      "ZR.T8.r3",
+      "ZR.T9.N1"
+     ],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 2,
+     "context_recall": 0.2,
+     "groundedness": null,
+     "verified": false,
+     "tool_calls": 8,
+     "attempts": 2,
+     "seconds": 83.56,
+     "cost_usd": 0.0128688,
+     "tokens": 12042,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 83.56,
+     "findings": [],
+     "retrieved": [
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r4",
+      "ZR.T8.r5"
+     ],
+     "missing": [
+      "BL.5.2.7.1",
+      "ZR.3.1.iii",
+      "ZR.4.1.2.b",
+      "ZR.T9.N1"
+     ],
+     "queries": [
+      "None",
+      "residential zone setbacks plot area",
+      "Table 8",
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r4",
+      "ZR.T8.r5"
+     ],
+     "problems": [
+      "coverage: height_by_road_width not retrieved",
+      "coverage: small_plot_height not retrieved"
+     ],
+     "reason": "self-verification failed after retries: coverage: height_by_road_width not retrieved; coverage: small_plot_height not retrieved",
+     "ok": false
+    },
+    {
+     "id": "s02",
+     "kind": "normal",
+     "note": "Same plot, within every limit",
+     "expected_route": "clear-for-submission",
+     "route": "specialist-review",
+     "route_ok": false,
+     "expected_violations": [],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "context_recall": 0.2,
+     "groundedness": null,
+     "verified": false,
+     "tool_calls": 8,
+     "attempts": 2,
+     "seconds": 94.242,
+     "cost_usd": 0.0127608,
+     "tokens": 12007,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 94.24,
+     "findings": [],
+     "retrieved": [
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r4",
+      "ZR.T8.r5"
+     ],
+     "missing": [
+      "BL.5.2.7.1",
+      "ZR.3.1.ii",
+      "ZR.4.1.2.b",
+      "ZR.T9.N1"
+     ],
+     "queries": [
+      "None",
+      "residential zone setbacks plot area",
+      "Table 8",
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r4",
+      "ZR.T8.r5"
+     ],
+     "problems": [
+      "coverage: height_by_road_width not retrieved",
+      "coverage: small_plot_height not retrieved"
+     ],
+     "reason": "self-verification failed after retries: coverage: height_by_road_width not retrieved; coverage: small_plot_height not retrieved",
+     "ok": false
+    },
+    {
+     "id": "s05",
+     "kind": "normal",
+     "note": "Plot above 250 sq m: front gap smaller than 12% of the depth",
+     "expected_route": "revise-and-recheck",
+     "route": "specialist-review",
+     "route_ok": false,
+     "expected_violations": [
+      "ZR.T8.r4"
+     ],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 1,
+     "context_recall": 0.25,
+     "groundedness": null,
+     "verified": false,
+     "tool_calls": 8,
+     "attempts": 2,
+     "seconds": 95.525,
+     "cost_usd": 0.0136008,
+     "tokens": 12217,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 95.53,
+     "findings": [],
+     "retrieved": [
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r4",
+      "ZR.T8.r5"
+     ],
+     "missing": [
+      "BL.5.2.7.1",
+      "ZR.3.1.ii",
+      "ZR.4.1.2.b"
+     ],
+     "queries": [
+      "None",
+      "residential zone setbacks plot area",
+      "Table 8",
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r4",
+      "ZR.T8.r5"
+     ],
+     "problems": [
+      "coverage: height_by_road_width not retrieved"
+     ],
+     "reason": "self-verification failed after retries: coverage: height_by_road_width not retrieved",
+     "ok": false
+    },
+    {
+     "id": "s09",
+     "kind": "normal",
+     "note": "Plot up to 60 sq m, front gap too small",
+     "expected_route": "revise-and-recheck",
+     "route": "specialist-review",
+     "route_ok": false,
+     "expected_violations": [
+      "ZR.T8.r1"
+     ],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 1,
+     "context_recall": 0.2,
+     "groundedness": null,
+     "verified": false,
+     "tool_calls": 8,
+     "attempts": 2,
+     "seconds": 98.478,
+     "cost_usd": 0.0144112,
+     "tokens": 12822,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 98.48,
+     "findings": [],
+     "retrieved": [
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r4",
+      "ZR.T8.r5"
+     ],
+     "missing": [
+      "BL.5.2.7.1",
+      "ZR.3.1.ii",
+      "ZR.4.1.2.b",
+      "ZR.T9.N1"
+     ],
+     "queries": [
+      "residential zone setbacks plot area",
+      "Table 8",
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r4",
+      "ZR.T8.r5",
+      "residential zone floor area ratio FAR built up area"
+     ],
+     "problems": [
+      "coverage: height_by_road_width not retrieved",
+      "coverage: small_plot_height not retrieved"
+     ],
+     "reason": "self-verification failed after retries: coverage: height_by_road_width not retrieved; coverage: small_plot_height not retrieved",
+     "ok": false
+    },
+    {
+     "id": "s15",
+     "kind": "normal",
+     "note": "Open parking floor too high (4.0 m)",
+     "expected_route": "revise-and-recheck",
+     "route": "specialist-review",
+     "route_ok": false,
+     "expected_violations": [
+      "BL.2.149"
+     ],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 1,
+     "context_recall": 0.6667,
+     "groundedness": null,
+     "verified": false,
+     "tool_calls": 8,
+     "attempts": 2,
+     "seconds": 150.867,
+     "cost_usd": 0.0189608,
+     "tokens": 14625,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 150.87,
+     "findings": [],
+     "retrieved": [
+      "BL.2.149",
+      "BL.5.2.7.1",
+      "ZR.3.1.iii",
+      "ZR.4.1.2.b",
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r4",
+      "ZR.T8.r5"
+     ],
+     "missing": [
+      "ZR.3.1.ii",
+      "ZR.T9.N1"
+     ],
+     "queries": [
+      "residential zone setbacks plot area",
+      "Table 8",
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r4",
+      "ZR.T8.r5",
+      "residential zone building height limit road width floors"
+     ],
+     "problems": [
+      "coverage: small_plot_height not retrieved"
+     ],
+     "reason": "self-verification failed after retries: coverage: small_plot_height not retrieved",
+     "ok": false
+    },
+    {
+     "id": "s19",
+     "kind": "normal",
+     "note": "Plot above 4000 sq m, front gap only 4 m",
+     "expected_route": "revise-and-recheck",
+     "route": "clear-for-submission",
+     "route_ok": false,
+     "expected_violations": [
+      "ZR.T8.r5"
+     ],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 1,
+     "context_recall": 0.5,
+     "groundedness": 1.0,
+     "verified": true,
+     "tool_calls": 8,
+     "attempts": 1,
+     "seconds": 73.347,
+     "cost_usd": 0.0134064,
+     "tokens": 11922,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 73.35,
+     "findings": [
+      [
+       "ZR.T8.r5",
+       "satisfied"
+      ],
+      [
+       "ZR.4.1.2.b",
+       "info"
+      ],
+      [
+       "ZR.3.1.iii",
+       "info"
+      ],
+      [
+       "BL.2.149",
+       "info"
+      ]
+     ],
+     "retrieved": [
+      "BL.2.149",
+      "BL.5.2.7.1",
+      "ZR.3.1.iii",
+      "ZR.4.1.2.b",
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r4",
+      "ZR.T8.r5"
+     ],
+     "missing": [
+      "ZR.3.1.ii"
+     ],
+     "queries": [
+      "residential zone setbacks plot area",
+      "Table 8",
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r4",
+      "ZR.T8.r5",
+      "residential zone height limit road width floors"
+     ],
+     "problems": [],
+     "reason": "no violation found among the retrieved provisions; this is not a certification",
+     "ok": false
+    },
+    {
+     "id": "s22",
+     "kind": "normal",
+     "note": "Small plot, 15 m tall counted with a 2.7 m parking floor: allowed up to 15 m with Table 8",
+     "expected_route": "revise-and-recheck",
+     "route": "specialist-review",
+     "route_ok": false,
+     "expected_violations": [
+      "ZR.T9.N1"
+     ],
+     "found_violations": [],
+     "tp": 0,
+     "fp": 0,
+     "fn": 1,
+     "context_recall": 0.875,
+     "groundedness": null,
+     "verified": false,
+     "tool_calls": 8,
+     "attempts": 2,
+     "seconds": 246.163,
+     "cost_usd": 0.0199904,
+     "tokens": 14640,
+     "flag_injection": false,
+     "flag_toxic": false,
+     "wall_s": 246.16,
+     "findings": [],
+     "retrieved": [
+      "BL.2.149",
+      "BL.5.2.7.1",
+      "ZR.3.1.iii",
+      "ZR.4.1.2.b",
+      "ZR.T8.r1",
+      "ZR.T8.r2",
+      "ZR.T8.r3",
+      "ZR.T8.r4",
+      "ZR.T8.r5",
+      "ZR.T9.N1",
+      "ZR.T9.N6"
+     ],
+     "missing": [
+      "BL.12.9"
+     ],
+     "queries": [
+      "residential zone setbacks plot area",
+      "Table 8",
+      "residential zone building height limit road width floors",
+      "ZR.4.1.2.b",
+      "residential zone floor area ratio FAR built up area limit",
+      "ZR.3.1.iii",
+      "Table 9",
+      "ZR.T9.N1"
+     ],
+     "problems": [
+      "degraded"
+     ],
+     "reason": "degraded mode: model provider unavailable (LLM call failed after 0 retries: NoneType: None). Retrieval-only evidence is attached; no finding was produced.",
+     "ok": false
+    }
+   ]
+  }
+ ]
+}

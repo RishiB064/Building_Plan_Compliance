@@ -1,0 +1,1238 @@
+{
+ "uid": "precheck-agents",
+ "title": "Plan checker: per-agent view",
+ "tags": [
+  "precheck"
+ ],
+ "timezone": "browser",
+ "schemaVersion": 39,
+ "version": 1,
+ "refresh": "5s",
+ "time": {
+  "from": "now-15m",
+  "to": "now"
+ },
+ "panels": [
+  {
+   "id": 1,
+   "type": "row",
+   "title": "Is it healthy right now?",
+   "collapsed": false,
+   "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 0
+   },
+   "panels": []
+  },
+  {
+   "id": 2,
+   "type": "stat",
+   "title": "Checks finished per minute",
+   "description": "How many plan checks the workers complete each minute.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 4,
+    "w": 5,
+    "x": 0,
+    "y": 1
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum(rate(precheck_runs_total[1m]))*60",
+     "legendFormat": "per min",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "background"
+   }
+  },
+  {
+   "id": 3,
+   "type": "stat",
+   "title": "Jobs waiting in line",
+   "description": "If this keeps growing, the workers cannot keep up. Add workers.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 4,
+    "w": 5,
+    "x": 5,
+    "y": 1
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "precheck_queue_depth",
+     "legendFormat": "waiting",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "orange",
+        "value": 5
+       },
+       {
+        "color": "red",
+        "value": 20
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "background"
+   }
+  },
+  {
+   "id": 4,
+   "type": "stat",
+   "title": "AI service cut off?",
+   "description": "1 means the circuit breaker is open: the AI provider has been failing, so we stopped calling it and answer in fallback mode.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 4,
+    "w": 5,
+    "x": 10,
+    "y": 1
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "max(precheck_breaker_open) or vector(0)",
+     "legendFormat": "breaker",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "red",
+        "value": 1
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "background"
+   }
+  },
+  {
+   "id": 5,
+   "type": "stat",
+   "title": "Failed checks (last 5 min)",
+   "description": "Checks that crashed. Should stay at 0.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 4,
+    "w": 5,
+    "x": 15,
+    "y": 1
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum(increase(precheck_runs_total{outcome=\"failed\"}[5m])) or vector(0)",
+     "legendFormat": "failed",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "red",
+        "value": 1
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "background"
+   }
+  },
+  {
+   "id": 6,
+   "type": "row",
+   "title": "How fast is it?",
+   "collapsed": false,
+   "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 5
+   },
+   "panels": []
+  },
+  {
+   "id": 7,
+   "type": "timeseries",
+   "title": "Time from submit to answer",
+   "description": "What the person waiting sees. p95 means 95 out of 100 checks were at least this fast. Compare with the target in docs/SLO.md.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 12,
+    "x": 0,
+    "y": 6
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "histogram_quantile(0.5, sum by (le)(rate(precheck_e2e_seconds_bucket[1m])))",
+     "legendFormat": "typical (p50)",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    },
+    {
+     "refId": "B",
+     "expr": "histogram_quantile(0.95, sum by (le)(rate(precheck_e2e_seconds_bucket[1m])))",
+     "legendFormat": "slow end (p95)",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 8,
+   "type": "timeseries",
+   "title": "Time per step, by agent",
+   "description": "Which step is slow. 'decide' and 'assess' are model calls, 'tool' is a rule search.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 12,
+    "x": 12,
+    "y": 6
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "histogram_quantile(0.95, sum by (le, agent, step)(rate(precheck_step_seconds_bucket[1m])))",
+     "legendFormat": "{{agent}} {{step}}",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 9,
+   "type": "row",
+   "title": "What are the agents doing?",
+   "collapsed": false,
+   "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 13
+   },
+   "panels": []
+  },
+  {
+   "id": 10,
+   "type": "timeseries",
+   "title": "Model calls by agent",
+   "description": "How often each agent calls the AI, and whether the call worked.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 0,
+    "y": 14
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (agent, outcome)(rate(precheck_llm_calls_total[1m]))",
+     "legendFormat": "{{agent}} {{outcome}}",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ops",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 11,
+   "type": "timeseries",
+   "title": "Model call retries",
+   "description": "Calls that had to be tried again. A rise means the provider is struggling.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 8,
+    "y": 14
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (agent)(rate(precheck_llm_retries_total[5m]))",
+     "legendFormat": "{{agent}}",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ops",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 12,
+   "type": "timeseries",
+   "title": "Rule searches by tool",
+   "description": "How often the research agent used each of its tools.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 16,
+    "y": 14
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (tool)(rate(precheck_tool_calls_total[1m]))",
+     "legendFormat": "{{tool}}",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ops",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 13,
+   "type": "timeseries",
+   "title": "Average steps per check",
+   "description": "How many think-and-act rounds the research agent needs. A jump means it is wandering.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 12,
+    "x": 0,
+    "y": 21
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (agent)(rate(precheck_steps_per_run_sum[5m])) / sum by (agent)(rate(precheck_steps_per_run_count[5m]))",
+     "legendFormat": "{{agent}}",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 14,
+   "type": "timeseries",
+   "title": "Average tool calls per check",
+   "description": "Searches per check. The limit is MAX_TOOL_CALLS.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 12,
+    "x": 12,
+    "y": 21
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (agent)(rate(precheck_tool_calls_per_run_sum[5m])) / sum by (agent)(rate(precheck_tool_calls_per_run_count[5m]))",
+     "legendFormat": "{{agent}}",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 15,
+   "type": "row",
+   "title": "What does it cost?",
+   "collapsed": false,
+   "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 28
+   },
+   "panels": []
+  },
+  {
+   "id": 16,
+   "type": "timeseries",
+   "title": "Tokens per minute",
+   "description": "Text the AI reads (prompt) and writes (completion). This is what you pay for.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 0,
+    "y": 29
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (agent, kind)(rate(precheck_llm_tokens_total[1m]))*60",
+     "legendFormat": "{{agent}} {{kind}}",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 17,
+   "type": "timeseries",
+   "title": "Cost per check (USD)",
+   "description": "Total AI spend divided by checks finished. Needs PRICE_* set in .env.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 8,
+    "y": 29
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum(rate(precheck_llm_cost_usd_total[5m])) / sum(rate(precheck_runs_total[5m]))",
+     "legendFormat": "per check",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "currencyUSD",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 18,
+   "type": "timeseries",
+   "title": "Cost by agent and step (USD/min)",
+   "description": "Where the money goes.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 16,
+    "y": 29
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (agent, step)(rate(precheck_llm_cost_usd_total[5m]))*60",
+     "legendFormat": "{{agent}} {{step}}",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "currencyUSD",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 19,
+   "type": "row",
+   "title": "Is the answer trustworthy?",
+   "collapsed": false,
+   "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 36
+   },
+   "panels": []
+  },
+  {
+   "id": 20,
+   "type": "timeseries",
+   "title": "Double-check results",
+   "description": "How often the verifier accepted our answer vs sent it back.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 0,
+    "y": 37
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (outcome)(increase(precheck_verification_total[5m]))",
+     "legendFormat": "{{outcome}}",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 21,
+   "type": "timeseries",
+   "title": "Sent to a person, and why",
+   "description": "Escalations by reason. 'degraded' means the AI service was down.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 8,
+    "y": 37
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (reason)(increase(precheck_escalations_total[5m]))",
+     "legendFormat": "{{reason}}",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 22,
+   "type": "timeseries",
+   "title": "Safety filters triggered",
+   "description": "Instruction-like notes, rude notes, and outputs we had to clean.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 16,
+    "y": 37
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (kind)(increase(precheck_guardrail_total[5m]))",
+     "legendFormat": "{{kind}}",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 23,
+   "type": "timeseries",
+   "title": "Automatic quality score of sampled live checks",
+   "description": "From a sample of real runs, scored without a human: quotes are word for word, rules cited were really found, must-have topics covered. 1.0 is perfect.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 12,
+    "x": 0,
+    "y": 44
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum by (metric)(rate(precheck_live_quality_score_sum[10m])) / sum by (metric)(rate(precheck_live_quality_score_count[10m]))",
+     "legendFormat": "{{metric}}",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 24,
+   "type": "stat",
+   "title": "People who said 'useful'",
+   "description": "Share of thumbs-up among feedback received.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 6,
+    "x": 12,
+    "y": 44
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum(precheck_feedback_total{verdict=\"satisfactory\"}) / sum(precheck_feedback_total)",
+     "legendFormat": "useful",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percentunit",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "background"
+   }
+  },
+  {
+   "id": 25,
+   "type": "stat",
+   "title": "Repeat requests answered from memory",
+   "description": "Share of requests served from the whole-run cache, with no AI cost.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 6,
+    "x": 18,
+    "y": 44
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum(rate(precheck_run_cache_total{result=\"hit\"}[5m])) / sum(rate(precheck_run_cache_total[5m]))",
+     "legendFormat": "cache hits",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percentunit",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "background"
+   }
+  },
+  {
+   "id": 26,
+   "type": "row",
+   "title": "Protection and rulebook",
+   "collapsed": false,
+   "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 51
+   },
+   "panels": []
+  },
+  {
+   "id": 27,
+   "type": "timeseries",
+   "title": "Turned away at the door",
+   "description": "Rejected (bad data) and rate-limited requests.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 12,
+    "x": 0,
+    "y": 52
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "sum(rate(precheck_rejected_requests_total[5m]))*60",
+     "legendFormat": "bad data per min",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    },
+    {
+     "refId": "B",
+     "expr": "sum(rate(precheck_rate_limited_total[5m]))*60",
+     "legendFormat": "too many requests per min",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {}
+  },
+  {
+   "id": 28,
+   "type": "stat",
+   "title": "Rulebook age (hours)",
+   "description": "How long since the rulebook index was built. Re-run the indexer when the rules change.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 6,
+    "x": 12,
+    "y": 52
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "(time() - max(precheck_index_built_timestamp_seconds)) / 3600",
+     "legendFormat": "age",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "h",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "orange",
+        "value": 168
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "background"
+   }
+  },
+  {
+   "id": 29,
+   "type": "stat",
+   "title": "Rules in the index",
+   "description": "Number of rule pieces the system can search.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 7,
+    "w": 6,
+    "x": 18,
+    "y": 52
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "max(precheck_index_chunks)",
+     "legendFormat": "chunks",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "background"
+   }
+  },
+  {
+   "id": 30,
+   "type": "stat",
+   "title": "Workers running",
+   "description": "How many workers answer the metrics check. If this drops to 0 or keeps changing, see the runbook.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "h": 4,
+    "w": 4,
+    "x": 20,
+    "y": 1
+   },
+   "targets": [
+    {
+     "refId": "A",
+     "expr": "count(up{job=\"worker\"} == 1) or vector(0)",
+     "legendFormat": "workers",
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "red",
+        "value": null
+       },
+       {
+        "color": "green",
+        "value": 1
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ]
+    },
+    "colorMode": "background"
+   }
+  }
+ ],
+ "templating": {
+  "list": []
+ },
+ "annotations": {
+  "list": []
+ }
+}

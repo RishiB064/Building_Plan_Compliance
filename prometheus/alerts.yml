@@ -1,0 +1,30 @@
+# Rules that light up on http://localhost:9090/alerts. No Alertmanager here, so they are for looking at,
+# not for paging. Each one maps to a section in docs/RUNBOOK.md.
+groups:
+  - name: precheck
+    rules:
+      - alert: WorkerUnreachable
+        expr: count(up{job="worker"} == 1) < 1 or absent(up{job="worker"})
+        for: 30s
+        annotations: {summary: "No worker is answering. Checks will pile up in the queue.", runbook: "RUNBOOK.md#worker-keeps-restarting-or-is-down"}
+      - alert: WorkerFlapping
+        expr: changes(up{job="worker"}[2m]) > 3
+        annotations: {summary: "A worker keeps going up and down (crash loop).", runbook: "RUNBOOK.md#worker-keeps-restarting-or-is-down"}
+      - alert: QueueGrowing
+        expr: precheck_queue_depth > 10
+        for: 1m
+        annotations: {summary: "More than 10 checks are waiting. Add workers or threads.", runbook: "RUNBOOK.md#checks-stay-queued"}
+      - alert: AIProviderCutOff
+        expr: max(precheck_breaker_open) == 1
+        annotations: {summary: "Circuit breaker is open. Answers are in fallback mode.", runbook: "RUNBOOK.md#everything-is-degraded-or-sent-to-a-person"}
+      - alert: ChecksFailing
+        expr: sum(increase(precheck_runs_total{outcome="failed"}[5m])) > 0
+        annotations: {summary: "Checks are crashing.", runbook: "RUNBOOK.md#checks-fail"}
+      - alert: SlowChecks
+        expr: histogram_quantile(0.95, sum by (le)(rate(precheck_e2e_seconds_bucket[5m]))) > 45
+        for: 2m
+        annotations: {summary: "p95 time to answer is over the 45 s target in docs/SLO.md.", runbook: "RUNBOOK.md#checks-are-slow"}
+      - alert: QualityDropping
+        expr: sum(rate(precheck_live_quality_score_sum{metric="overall"}[15m])) / sum(rate(precheck_live_quality_score_count{metric="overall"}[15m])) < 0.9
+        for: 5m
+        annotations: {summary: "Sampled live answers score below 0.9. Run the evaluation.", runbook: "RUNBOOK.md#answers-look-wrong-or-everything-escalates"}

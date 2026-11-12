@@ -1,0 +1,132 @@
+# Run: cp .env.example .env && docker compose up --build
+# Scale agents: docker compose up --scale worker=3
+#
+# Deployment boundaries (D3):
+#   api      - stateless HTTP; scales with request rate, cheap, must stay up when workers are busy or crashed
+#   worker   - CPU/memory heavy (embedder + FAISS in RAM), long-running runs; scales with run volume; crash isolated
+#              from the API so a bad run never takes the front door down
+#   redis    - queue + run state + cache; the only stateful coupling between api and workers
+#   indexer  - one-shot job; releases independently of the serving path (re-index without redeploying api/worker)
+#   llm-stub - stands in for the provider (D6); swapped for a real provider by changing LLM_BASE_URL only
+#   prometheus - scrapes every service
+#   grafana  - dashboards on top of prometheus (per-agent view), no login for local demo use only
+#   jaeger   - distributed traces: one trace per request from api through the queue into the worker and agents
+#   eval     - one-shot tool (profile "tools"): runs the evaluation set, not started by default
+x-app: &app
+  build:
+    context: .
+    args:
+      EMBED_MODEL: ${EMBED_MODEL:?copy .env.example to .env first}
+  image: bylaw-precheck:local
+  env_file: .env
+  environment:
+    # Where traces go (Jaeger). Unset or unreachable is fine: tracing is optional and never blocks a request.
+    OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT-http://jaeger:4318}
+
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  llm-stub:
+    <<: *app
+    command: ["uvicorn", "precheck.stub_llm:app", "--host", "0.0.0.0", "--port", "8080"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8080/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  indexer:
+    <<: *app
+    command: ["python", "-m", "precheck.cli", "ingest"]
+    volumes:
+      - ./corpus:/data/corpus:ro
+      - index:/data/index
+    restart: "no"
+
+  api:
+    <<: *app
+    command: ["uvicorn", "precheck.api:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - index:/data/index:ro
+    depends_on:
+      redis: {condition: service_healthy}
+      indexer: {condition: service_completed_successfully}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+
+  worker:
+    <<: *app
+    command: ["python", "-m", "precheck.worker"]
+    volumes:
+      - index:/data/index:ro
+    depends_on:
+      redis: {condition: service_healthy}
+      llm-stub: {condition: service_healthy}
+      indexer: {condition: service_completed_successfully}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:9100/metrics')"]
+      interval: 10s
+      timeout: 3s
+      retries: 15
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - api
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    environment:
+      # Open access so a demo needs no login. Do not expose this port beyond your own machine.
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_SECURITY_ALLOW_EMBEDDING: "true"   # lets the app page show the dashboard inside a tab
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/precheck.json
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.57
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"   # web UI
+
+  eval:
+    <<: *app
+    profiles: ["tools"]
+    command: ["python", "-m", "eval.run"]
+    volumes:
+      - ./eval:/app/eval
+      - index:/data/index:ro
+    depends_on:
+      llm-stub: {condition: service_healthy}
+      indexer: {condition: service_completed_successfully}
+    restart: "no"
+
+volumes:
+  index:

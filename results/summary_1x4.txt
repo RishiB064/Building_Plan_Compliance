@@ -1,0 +1,1 @@
+workers=1 threads=4 users=10 runs=118 failures=0 p50=20.0s p95=31.0s max=33.2s

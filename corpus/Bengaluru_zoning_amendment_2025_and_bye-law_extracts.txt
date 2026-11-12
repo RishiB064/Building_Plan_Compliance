@@ -1,0 +1,37 @@
+REAL REGULATION TEXT, transcribed by hand from two official documents. Chunk titles are plain-English labels added for this project; the text after each title is the regulation itself (minor spacing fixed).
+Source ZR: "Zonal Regulations of the Revised Master Plan-2015 of Bengaluru and Greater Bengaluru (Amendment) Regulations 2025", Government of Karnataka Notification No. UDD 235 MNJ 2025(E), dated 05.01.2026 (scanned PDF, read by OCR and checked against the page images).
+Source BL: "Karnataka Municipal Corporations Model Building Bye-Laws 2017", Notification No. UDD 14 TTP 2017 (P-4), dated 28.10.2017.
+NOT IN THESE DOCUMENTS (so the system cannot check them): Table 9 (setbacks above 12 m), Table 10 (FAR and ground coverage), parking norms, and the rules for zones other than residential. The bye-laws send all of these to the Zonal Regulations.
+Format: each chunk starts with a [CLAUSE-ID] line. Table 8 is one chunk per row with the table title repeated in the row.
+
+[ZR.3.1.ii] Clause ZR.3.1.ii - Which gap table applies to buildings up to 12 m. For all types of building with total height up to 12.0 m, excluding the stilt floor, the setbacks shall be calculated as per Table 8.
+
+[ZR.3.1.iii] Clause ZR.3.1.iii - Which gap table applies to buildings over 12 m. Table 9 shall be referred to buildings which are more than 12.0 m in total height, to fix the setbacks (to be read with clause 8.1 (a) (iii)). However, for buildings located on plots not exceeding 250 sq.m in area and with a height up to 15 m (including the stilt floor), the setbacks shall be determined as per Table 8.
+
+[ZR.T8.r1] Table 8 - Gap between the building and the plot edge, for buildings up to 12.0 m tall not counting the stilt floor. Plot area up to 4000 sq.m. Row 1: site area up to 60 sq.m. Setbacks in m: front side 0.75, rear side none, left or right side 0.60 m on any one side.
+
+[ZR.T8.r2] Table 8 - Gap between the building and the plot edge, for buildings up to 12.0 m tall not counting the stilt floor. Plot area up to 4000 sq.m. Row 2: site area above 60 sq.m and up to 150 sq.m. Setbacks in m: front side 0.90, rear side 0.70, left or right side 0.70 m on any one side.
+
+[ZR.T8.r3] Table 8 - Gap between the building and the plot edge, for buildings up to 12.0 m tall not counting the stilt floor. Plot area up to 4000 sq.m. Row 3: site area above 150 sq.m and up to 250 sq.m. Setbacks in m: front side 1.0, rear side 0.80, left side 0.80, right side 0.80.
+
+[ZR.T8.r4] Table 8 - Gap between the building and the plot edge, for buildings up to 12.0 m tall not counting the stilt floor. Plot area up to 4000 sq.m. Row 4: site area above 250 sq.m and up to 4000 sq.m. Setbacks: front side 12 percent of the depth of site, rear side 8 percent of the depth of site, left side 8 percent of the width of site, right side 8 percent of the width of site.
+
+[ZR.T8.r5] Table 8 - Gap between the building and the plot edge, for buildings up to 12.0 m tall not counting the stilt floor. For plot area above 4000 sq.m: minimum setback of 5.0 m on all sides shall be insisted.
+
+[ZR.T9.N1] Clause ZR.T9.N1 - Highest building on a small plot. For plots up to 250 sq.m in area, the maximum permissible building height shall be 12.0 m excluding the stilt floor.
+
+[ZR.T9.N6] Clause ZR.T9.N6 - Fire and life safety for buildings 15 m and taller. For buildings with a height of 15.0 meters and above, up to a maximum height of 21.0 meters (including stilt), the provisions of the National Building Code pertaining to Fire and Life Safety shall be strictly adhered to.
+
+[ZR.4.1.2.b] Clause ZR.4.1.2.b - Height limit on a narrow road, residential main zone. If the road width is less than 9.0 m, then the maximum height is restricted to 15.0 m (including stilt floor) irrespective of the FAR permissible.
+
+[BL.5.2.7.1] Clause BL.5.2.7.1 - Where the floor area, plot coverage and parking limits come from. The open spaces/setbacks, coverage, FAR, parking requirements shall be as per Zonal regulations of the Master Plan.
+
+[BL.6.3] Clause BL.6.3 - Parking comes from the zonal regulations. The parking spaces shall be provided as per the provisions of Master Plan and Zonal Regulations as prevalent.
+
+[BL.2.87] Clause BL.2.87 - What counts as a high-rise building. High-rise Building means a building having height of 15 m and above.
+
+[BL.2.142] Clause BL.2.142 - What a setback is measured from. Setback means the distance prescribed under the Zonal Regulations of respective LPAs between the plot boundary and the plinth of the building or the covered Cantilever projection of the building in any floor.
+
+[BL.2.149] Clause BL.2.149 - Open parking floor at the bottom. Stilt floor means open parking area provided at ground level. The height of the stilt floor shall be a minimum of 2.4 m and maximum of 2.7 m height (floor to beam bottom or ceiling whichever is less). The height shall be considered for calculating the total height of the building. In case of mechanical or multi-level parking the maximum height of the stilt floor shall be 3.75 m.
+
+[BL.12.9] Clause BL.12.9 - Lifts in buildings 15 m and taller. Provision of the lifts shall be made for all multi-storeyed building having a height of 15.0 m and above.
